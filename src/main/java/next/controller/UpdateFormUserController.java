@@ -9,21 +9,18 @@ import org.slf4j.LoggerFactory;
 import core.db.DataBase;
 import next.model.User;
 
-public class UpdateUserController implements Controller {
-    private static final Logger logger = LoggerFactory.getLogger(UpdateUserController.class);
+public class UpdateFormUserController implements Controller {
+    private static final Logger logger = LoggerFactory.getLogger(UpdateFormUserController.class);
 
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse respone) throws Exception {
-		User user = DataBase.findUserById(request.getParameter("userId"));
-        if (!UserSessionUtils.isSameUser(request.getSession(), user)) {
-            throw new IllegalStateException("다른 사용자의 정보를 수정할 수 없습니다.");
-        }
-
-        User updateUser = new User(request.getParameter("userId"), request.getParameter("password"), request.getParameter("name"),
-                request.getParameter("email"));
-        logger.debug("Update User : {}", updateUser);
-        user.update(updateUser);
-		return "redirect:/";
+		String userId = request.getParameter("userId");
+		User user = DataBase.findUserById(userId);
+		if (!UserSessionUtils.isSameUser(request.getSession(), user)) {
+			throw new IllegalStateException("다른 사용자의 정보를 수정할 수 없습니다.");
+		}
+		request.setAttribute("user", user);
+		return "/user/updateForm.jsp";
 	}
 }
 //public class UpdateUserController extends HttpServlet {
