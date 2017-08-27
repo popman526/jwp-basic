@@ -10,15 +10,16 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import core.mvc.Controller;
+import core.mvc.AbstractController;
+import core.mvc.ModelAndView;
 import next.dao.AnswerDao;
 import next.model.Answer;
 
-public class AddAnswerController implements Controller {
+public class AddAnswerController extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(AddAnswerController.class);
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         Answer answer = new Answer(req.getParameter("writer"), req.getParameter("contents"),
                 Long.parseLong(req.getParameter("questionId")));
         log.debug("answer : {}", answer);
@@ -29,6 +30,6 @@ public class AddAnswerController implements Controller {
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
         out.print(mapper.writeValueAsString(savedAnswer));
-        return null;
+        return jsonView();
     }
 }
