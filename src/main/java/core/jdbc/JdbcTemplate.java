@@ -8,10 +8,12 @@ import java.util.List;
 
 public class JdbcTemplate {
 	
-	public void executeUpdate(String sql, PreparedStatementSetter pss) throws DataAccessException {
+	public void executeUpdate(String sql, Object... parameters) throws DataAccessException {
 		try (Connection con = ConnectionManager.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);){
-			pss.setParameter(pstmt);
+			for (int i = 0; i < parameters.length; i++) {
+				pstmt.setObject(i + 1, parameters[i]);
+			}
 			
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
@@ -19,12 +21,14 @@ public class JdbcTemplate {
 		}
 	}
 	
-	public <T> List<T> query(String sql, PreparedStatementSetter pss, RowMapper<T> rm) throws DataAccessException {
+	public <T> List<T> query(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
         ResultSet rs = null;
         try (Connection con = ConnectionManager.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
         		){
-            pss.setParameter(pstmt);
+        	for (int i = 0; i < parameters.length; i++) {
+				pstmt.setObject(i + 1, parameters[i]);
+			}
             rs = pstmt.executeQuery();
             
             List<T> list = rm.mapRow(rs);
@@ -35,8 +39,8 @@ public class JdbcTemplate {
         }
     }
 	
-	public <T> T queryForObject(String sql, PreparedStatementSetter pss, RowMapper<T> rm) throws DataAccessException {
-		List<T> result = query(sql, pss, rm);
+	public <T> T queryForObject(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
+		List<T> result = query(sql, rm, parameters);
 		System.out.println(result);
 		if (result.isEmpty()) {
 			return null;
