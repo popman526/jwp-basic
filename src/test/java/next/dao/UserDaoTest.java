@@ -1,6 +1,7 @@
 package next.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -39,6 +40,14 @@ public class UserDaoTest {
     public void findAll() throws Exception {
         UserDao userDao = new UserDao();
         List<User> users = userDao.findAll();
+        System.out.println(users);
         assertEquals(1, users.size());
+    }
+    
+    @Test
+    public void findOne() throws Exception {
+    	UserDao userDao = new UserDao();
+    	User user = userDao.findByUserId("admin");
+    	assertNotNull(user);
     }
 }
