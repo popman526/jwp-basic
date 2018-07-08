@@ -23,12 +23,10 @@ public class UserDao {
 				pstmt.setString(4, user.getEmail());
 			}
 			
-			@Override
-			public String getSql() {
-				return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-			}
 		};
-    	jdbcTemplate.executeUpdate();
+		
+		String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+    	jdbcTemplate.executeUpdate(sql);
     }
 
     public void setInsertParameter(PreparedStatement pstmt) throws SQLException {
@@ -51,12 +49,9 @@ public class UserDao {
 				pstmt.setString(5, user.getUserId());
 			}
 			
-			@Override
-			public String getSql() throws SQLException {
-				return "UPDATE USERS SET userId = ?, password = ?, name = ?, email = ? where userId = ?";
-			}
 		};
-    	jdbcTemplate.executeUpdate();
+		String sql = "UPDATE USERS SET userId = ?, password = ?, name = ?, email = ? where userId = ?";
+    	jdbcTemplate.executeUpdate(sql);
     }
 
 	public void setUpdateParameter(User user, PreparedStatement pstmt) throws SQLException {
