@@ -81,15 +81,8 @@ public class UserDao {
 			@Override
 			public void setParameter(PreparedStatement pstmt) throws SQLException {
 				// TODO Auto-generated method stub
-				
 			}
 
-			@Override
-			public Object row(ResultSet rs) throws SQLException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
 		};
 		
 		String sql = "SELECT userId, password, name, email FROM USERS";
@@ -107,50 +100,19 @@ public class UserDao {
 
 			@Override
 			public List<User> mpaRow(ResultSet rs) throws SQLException {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Object row(ResultSet rs) throws SQLException {
+				List<User> list = new ArrayList<>();
 				User user = null;
-				if (rs.next()) {
+				while (rs.next()) {
 				    user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
 				            rs.getString("email"));
+				    list.add(user);
 				}
-				return user;
+				return list;
 			}
+
     	};
-    	String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
+    	
+    	String sql = "SELECT userId, password, name, email FROM USERS WHERE userId=?";
 		return (User)jdbcTemplate.queryForObject(sql);
-//        Connection con = null;
-//        PreparedStatement pstmt = null;
-//        ResultSet rs = null;
-//        try {
-//            con = ConnectionManager.getConnection();
-//            String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-//            pstmt = con.prepareStatement(sql);
-//            pstmt.setString(1, userId);
-//
-//            rs = pstmt.executeQuery();
-//
-//            User user = null;
-//            if (rs.next()) {
-//                user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-//                        rs.getString("email"));
-//            }
-//
-//            return user;
-//        } finally {
-//            if (rs != null) {
-//                rs.close();
-//            }
-//            if (pstmt != null) {
-//                pstmt.close();
-//            }
-//            if (con != null) {
-//                con.close();
-//            }
-//        }
     }
 }

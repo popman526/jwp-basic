@@ -38,35 +38,15 @@ public abstract class SelectJdbcTemplate {
     }
 	
 	public Object queryForObject(String sql) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-//            String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
-            pstmt = con.prepareStatement(sql);
-            setParameter(pstmt);
-
-            rs = pstmt.executeQuery();
-
-            Object user = row(rs);
-
-            return user;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+		List<?> result = list(sql);
+		System.out.println(result);
+		if (result.isEmpty()) {
+			return null;
+		}
+		
+		return result.get(0);
     }
 
-	public abstract Object row(ResultSet rs) throws SQLException;
-	
 	public abstract void setParameter(PreparedStatement pstmt) throws SQLException;
 
 	public abstract List<User> mpaRow(ResultSet rs) throws SQLException;
