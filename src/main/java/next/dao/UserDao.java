@@ -13,15 +13,25 @@ import next.model.User;
 
 public class UserDao {
     public void insert(User user) throws SQLException {
-    	JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    	jdbcTemplate.insert(user, this);
+    	JdbcTemplate jdbcTemplate = new JdbcTemplate() {
+			
+			@Override
+			public void setParameter(User user, PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, user.getUserId());
+				pstmt.setString(2, user.getPassword());
+				pstmt.setString(3, user.getName());
+				pstmt.setString(4, user.getEmail());
+			}
+			
+			@Override
+			public String getSql() {
+				return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+			}
+		};
+    	jdbcTemplate.insert(user);
     }
 
     public void setInsertParameter(User user, PreparedStatement pstmt) throws SQLException {
-		pstmt.setString(1, user.getUserId());
-		pstmt.setString(2, user.getPassword());
-		pstmt.setString(3, user.getName());
-		pstmt.setString(4, user.getEmail());
 	}
 
 	public String getInsertSql() {
@@ -30,16 +40,26 @@ public class UserDao {
 	}
 
     public void update(User user) throws SQLException {
-    	JdbcTemplate jdbcTemplate = new JdbcTemplate();
-    	jdbcTemplate.update(user, this);
+    	JdbcTemplate jdbcTemplate = new JdbcTemplate() {
+			
+			@Override
+			public void setParameter(User user, PreparedStatement pstmt) throws SQLException {
+				pstmt.setString(1, user.getUserId());
+				pstmt.setString(2, user.getPassword());
+				pstmt.setString(3, user.getName());
+				pstmt.setString(4, user.getEmail());
+				pstmt.setString(5, user.getUserId());
+			}
+			
+			@Override
+			public String getSql() throws SQLException {
+				return "UPDATE USERS SET userId = ?, password = ?, name = ?, email = ? where userId = ?";
+			}
+		};
+    	jdbcTemplate.update(user);
     }
 
 	public void setUpdateParameter(User user, PreparedStatement pstmt) throws SQLException {
-		pstmt.setString(1, user.getUserId());
-		pstmt.setString(2, user.getPassword());
-		pstmt.setString(3, user.getName());
-		pstmt.setString(4, user.getEmail());
-		pstmt.setString(5, user.getUserId());
 	}
 
 	public String getUpdateSql() {
