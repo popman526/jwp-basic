@@ -9,6 +9,7 @@ import java.util.List;
 
 import core.jdbc.ConnectionManager;
 import core.jdbc.JdbcTemplate;
+import core.jdbc.SelectJdbcTemplate;
 import next.model.User;
 
 public class UserDao {
@@ -63,36 +64,31 @@ public class UserDao {
 	}
 
     public List<User> findAll() throws SQLException {
-    	Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS";
-            pstmt = con.prepareStatement(sql);
+    	SelectJdbcTemplate jdbcTemplate = new SelectJdbcTemplate() {
+			
+			@Override
+			public List<User> mpaRow(ResultSet rs) throws SQLException {
+				List<User> list = new ArrayList<>();
+				User user = null;
+				while (rs.next()) {
+				    user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+				            rs.getString("email"));
+				    list.add(user);
+				}
+				return list;
+			}
 
-            rs = pstmt.executeQuery();
-            
-            List<User> list = new ArrayList<>();
-            User user = null;
-            while (rs.next()) {
-                user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
-                list.add(user);
-            }
-
-            return list;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+			@Override
+			public void setParameter(PreparedStatement pstmt) throws SQLException {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		
+		String sql = "SELECT userId, password, name, email FROM USERS";
+		return jdbcTemplate.list(sql);
+		
     }
 
     public User findByUserId(String userId) throws SQLException {
