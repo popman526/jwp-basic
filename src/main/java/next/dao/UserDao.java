@@ -6,15 +6,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.h2.result.Row;
-
 import core.jdbc.JdbcTemplate;
 import core.jdbc.PreparedStatementSetter;
 import core.jdbc.RowMapper;
 import next.model.User;
 
 public class UserDao {
-    public void insert(User user) throws SQLException {
+    public void insert(User user) {
     	PreparedStatementSetter pss = new PreparedStatementSetter() {
 			
 			@Override
@@ -31,7 +29,7 @@ public class UserDao {
     	jdbcTemplate.executeUpdate(sql, pss);
     }
 
-    public void update(User user) throws SQLException {
+    public void update(User user) {
     	PreparedStatementSetter pss = new PreparedStatementSetter() {
     		
     		@Override
@@ -48,7 +46,7 @@ public class UserDao {
     	jdbcTemplate.executeUpdate(sql, pss);
     }
 
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
     	PreparedStatementSetter pss = new PreparedStatementSetter() {
 			
 			@Override
@@ -78,7 +76,7 @@ public class UserDao {
 		
     }
 
-    public User findByUserId(String userId) throws SQLException {
+    public User findByUserId(String userId) {
     	PreparedStatementSetter pss = new PreparedStatementSetter() {
 			
 			@Override

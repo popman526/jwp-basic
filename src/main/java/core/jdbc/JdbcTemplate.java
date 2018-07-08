@@ -10,7 +10,7 @@ import next.model.User;
 
 public class JdbcTemplate {
 	
-	public void executeUpdate(String sql, PreparedStatementSetter pss) throws SQLException {
+	public void executeUpdate(String sql, PreparedStatementSetter pss) throws DataAccessException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {
@@ -19,18 +19,28 @@ public class JdbcTemplate {
 			pss.setParameter(pstmt);
 			
 			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
 		} finally {
 			if (pstmt != null) {
-				pstmt.close();
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					throw new DataAccessException(e);
+				}
 			}
 			
 			if (con != null) {
-				con.close();
+				try {
+					con.close();
+				} catch (SQLException e) {
+					throw new DataAccessException(e);
+				}
 			}
 		}
 	}
 	
-	public List<User> query(String sql, PreparedStatementSetter pss, RowMapper rm) throws SQLException {
+	public List<User> query(String sql, PreparedStatementSetter pss, RowMapper rm) throws DataAccessException {
     	Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -43,20 +53,34 @@ public class JdbcTemplate {
             List<User> list = rm.mapRow(rs);
 
             return list;
-        } finally {
+        } catch (SQLException e) {
+        	throw new DataAccessException(e);
+		} finally {
             if (rs != null) {
-                rs.close();
+                try {
+					rs.close();
+				} catch (SQLException e) {
+					throw new DataAccessException(e);
+				}
             }
             if (pstmt != null) {
-                pstmt.close();
+                try {
+					pstmt.close();
+				} catch (SQLException e) {
+					throw new DataAccessException(e);
+				}
             }
             if (con != null) {
-                con.close();
+                try {
+					con.close();
+				} catch (SQLException e) {
+					throw new DataAccessException(e);
+				}
             }
         }
     }
 	
-	public Object queryForObject(String sql, PreparedStatementSetter pss, RowMapper rm) throws SQLException {
+	public Object queryForObject(String sql, PreparedStatementSetter pss, RowMapper rm) throws DataAccessException {
 		List<?> result = query(sql, pss, rm);
 		System.out.println(result);
 		if (result.isEmpty()) {
