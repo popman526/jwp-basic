@@ -8,15 +8,15 @@ import java.util.List;
 
 import next.model.User;
 
-public abstract class JdbcTemplate {
+public class JdbcTemplate {
 	
-	public void executeUpdate(String sql) throws SQLException {
+	public void executeUpdate(String sql, PreparedStatementSetter pss) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {
 			con = ConnectionManager.getConnection();
 			pstmt = con.prepareStatement(sql);
-			setParameter(pstmt);
+			pss.setParameter(pstmt);
 			
 			pstmt.executeUpdate();
 		} finally {
@@ -30,17 +30,17 @@ public abstract class JdbcTemplate {
 		}
 	}
 	
-	public List<User> query(String sql) throws SQLException {
+	public List<User> query(String sql, PreparedStatementSetter pss, RowMapper rm) throws SQLException {
     	Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            setParameter(pstmt);
+            pss.setParameter(pstmt);
             rs = pstmt.executeQuery();
             
-            List<User> list = mpaRow(rs);
+            List<User> list = rm.mapRow(rs);
 
             return list;
         } finally {
@@ -56,8 +56,8 @@ public abstract class JdbcTemplate {
         }
     }
 	
-	public Object queryForObject(String sql) throws SQLException {
-		List<?> result = query(sql);
+	public Object queryForObject(String sql, PreparedStatementSetter pss, RowMapper rm) throws SQLException {
+		List<?> result = query(sql, pss, rm);
 		System.out.println(result);
 		if (result.isEmpty()) {
 			return null;
@@ -65,10 +65,6 @@ public abstract class JdbcTemplate {
 		
 		return result.get(0);
     }
-
-	public abstract void setParameter(PreparedStatement pstmt) throws SQLException;
-
-	public abstract List<User> mpaRow(ResultSet rs) throws SQLException;
 
 
 }
