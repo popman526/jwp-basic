@@ -23,6 +23,12 @@ public class UserDao {
 				pstmt.setString(3, user.getName());
 				pstmt.setString(4, user.getEmail());
 			}
+
+			@Override
+			public List<User> mpaRow(ResultSet rs) throws SQLException {
+				// TODO Auto-generated method stub
+				return null;
+			}
 			
 		};
 		
@@ -48,6 +54,12 @@ public class UserDao {
 				pstmt.setString(3, user.getName());
 				pstmt.setString(4, user.getEmail());
 				pstmt.setString(5, user.getUserId());
+			}
+
+			@Override
+			public List<User> mpaRow(ResultSet rs) throws SQLException {
+				// TODO Auto-generated method stub
+				return null;
 			}
 			
 		};
@@ -86,7 +98,7 @@ public class UserDao {
 		};
 		
 		String sql = "SELECT userId, password, name, email FROM USERS";
-		return jdbcTemplate.list(sql);
+		return jdbcTemplate.query(sql);
 		
     }
 

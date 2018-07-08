@@ -4,14 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import next.model.User;
 
 public abstract class SelectJdbcTemplate {
 	
-	public List<User> list(String sql) throws SQLException {
+	public List<User> query(String sql) throws SQLException {
     	Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -38,7 +37,7 @@ public abstract class SelectJdbcTemplate {
     }
 	
 	public Object queryForObject(String sql) throws SQLException {
-		List<?> result = list(sql);
+		List<?> result = query(sql);
 		System.out.println(result);
 		if (result.isEmpty()) {
 			return null;
