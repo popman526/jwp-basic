@@ -16,12 +16,9 @@ public class UserDao {
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+            String sql = getInsertSql();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
+            setInsertParameter(user, pstmt);
 
             pstmt.executeUpdate();
         } finally {
@@ -34,19 +31,27 @@ public class UserDao {
             }
         }
     }
+
+	private void setInsertParameter(User user, PreparedStatement pstmt) throws SQLException {
+		pstmt.setString(1, user.getUserId());
+		pstmt.setString(2, user.getPassword());
+		pstmt.setString(3, user.getName());
+		pstmt.setString(4, user.getEmail());
+	}
+
+	private String getInsertSql() {
+		String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+		return sql;
+	}
 
     public void update(User user) throws SQLException {
     	Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "UPDATE USERS SET userId = ?, password = ?, name = ?, email = ? where userId = ?";
+            String sql = getUpdateSql();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-            pstmt.setString(5, user.getUserId());
+            setUpdateParameter(user, pstmt);
 
             pstmt.executeUpdate();
         } finally {
@@ -59,6 +64,19 @@ public class UserDao {
             }
         }
     }
+
+	private void setUpdateParameter(User user, PreparedStatement pstmt) throws SQLException {
+		pstmt.setString(1, user.getUserId());
+		pstmt.setString(2, user.getPassword());
+		pstmt.setString(3, user.getName());
+		pstmt.setString(4, user.getEmail());
+		pstmt.setString(5, user.getUserId());
+	}
+
+	private String getUpdateSql() {
+		String sql = "UPDATE USERS SET userId = ?, password = ?, name = ?, email = ? where userId = ?";
+		return sql;
+	}
 
     public List<User> findAll() throws SQLException {
     	Connection con = null;
