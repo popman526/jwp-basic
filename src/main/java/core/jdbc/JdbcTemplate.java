@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import next.model.User;
-
 public class JdbcTemplate {
 	
 	public void executeUpdate(String sql, PreparedStatementSetter pss) throws DataAccessException {
@@ -21,7 +19,7 @@ public class JdbcTemplate {
 		}
 	}
 	
-	public List<User> query(String sql, PreparedStatementSetter pss, RowMapper rm) throws DataAccessException {
+	public <T> List<T> query(String sql, PreparedStatementSetter pss, RowMapper<T> rm) throws DataAccessException {
         ResultSet rs = null;
         try (Connection con = ConnectionManager.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
@@ -29,7 +27,7 @@ public class JdbcTemplate {
             pss.setParameter(pstmt);
             rs = pstmt.executeQuery();
             
-            List<User> list = rm.mapRow(rs);
+            List<T> list = rm.mapRow(rs);
 
             return list;
         } catch (SQLException e) {
@@ -37,8 +35,8 @@ public class JdbcTemplate {
         }
     }
 	
-	public Object queryForObject(String sql, PreparedStatementSetter pss, RowMapper rm) throws DataAccessException {
-		List<?> result = query(sql, pss, rm);
+	public <T> T queryForObject(String sql, PreparedStatementSetter pss, RowMapper<T> rm) throws DataAccessException {
+		List<T> result = query(sql, pss, rm);
 		System.out.println(result);
 		if (result.isEmpty()) {
 			return null;

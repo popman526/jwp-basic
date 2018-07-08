@@ -55,7 +55,7 @@ public class UserDao {
 				
 			}
 		};
-		RowMapper rm = new RowMapper() {
+		RowMapper<User> rm = new RowMapper<User>() {
 			
 			@Override
 			public List<User> mapRow(ResultSet rs) throws SQLException {
@@ -84,7 +84,7 @@ public class UserDao {
 				pstmt.setString(1, userId);
 			}
 		};
-		RowMapper rm = new RowMapper() {
+		RowMapper<User> rm = new RowMapper<User>() {
 			
 			@Override
 			public List<User> mapRow(ResultSet rs) throws SQLException {
