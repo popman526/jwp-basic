@@ -22,22 +22,43 @@ public class JdbcTemplate {
 	}
 	
 	public <T> List<T> query(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
-        ResultSet rs = null;
         try (Connection con = ConnectionManager.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
         		){
         	for (int i = 0; i < parameters.length; i++) {
 				pstmt.setObject(i + 1, parameters[i]);
 			}
-            rs = pstmt.executeQuery();
-            
-            List<T> list = rm.mapRow(rs);
+        	
+        	List<T> list = null;
+        	try (ResultSet rs = pstmt.executeQuery()) {
+				list = rm.mapRow(rs);
+        	}
 
             return list;
         } catch (SQLException e) {
         	throw new DataAccessException(e);
         }
     }
+	
+//	public <T> List<T> query(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
+//		try (Connection con = ConnectionManager.getConnection();
+//				PreparedStatement pstmt = prepareStatementWithParam(sql, con, parameters);
+//				ResultSet rs = pstmt.executeQuery();
+//				){
+//			return rm.mapRow(rs);
+//		} catch (SQLException e) {
+//			throw new DataAccessException(e);
+//		}
+//	}
+//
+//	private PreparedStatement prepareStatementWithParam(String sql, Connection con, Object... parameters)
+//			throws SQLException {
+//		PreparedStatement pstmt = con.prepareStatement(sql);
+//		for (int i = 0; i < parameters.length; i++) {
+//			pstmt.setObject(i + 1, parameters[i]);
+//		}
+//		return pstmt;
+//	}
 	
 	public <T> T queryForObject(String sql, RowMapper<T> rm, Object... parameters) throws DataAccessException {
 		List<T> result = query(sql, rm, parameters);
